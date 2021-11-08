@@ -1,2 +1,5 @@
-# pali-dictionary-bot
-Telegram bot for translation words form Pāli to Russian, and also some useful tools for learning Pāli.
+# PĀLI-RUSSIAN DICTIONARY TELEGRAM BOT
+
+Telegram bot for translation words form <b>Pāli</b> to <b>Russian</b>, and also it will includes some useful tools for learning Pāli.
+
+More detailed ecplanation will be publish later
