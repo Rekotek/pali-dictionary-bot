@@ -1,0 +1,32 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Local H2 Testbot in Docker" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+    <deployment type="dockerfile">
+      <settings>
+        <option name="imageTag" value="pali-dic-local" />
+        <option name="containerName" value="pali-bot" />
+        <option name="envVars">
+          <list>
+            <DockerEnvVarImpl>
+              <option name="name" value="APP_ROOT" />
+              <option name="value" value="/app" />
+            </DockerEnvVarImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value="--rm --env-file ./local.env" />
+        <option name="sourceFilePath" value="src/main/docker/local/Dockerfile" />
+        <option name="volumeBindings">
+          <list>
+            <DockerVolumeBindingImpl>
+              <option name="containerPath" value="/app/db" />
+              <option name="hostPath" value="$PROJECT_DIR$/db/" />
+            </DockerVolumeBindingImpl>
+          </list>
+        </option>
+      </settings>
+    </deployment>
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Package with H2 Driver" run_configuration_type="MavenRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Copy Jar to Local Docker" run_configuration_type="ShConfigurationType" />
+    </method>
+  </configuration>
+</component>

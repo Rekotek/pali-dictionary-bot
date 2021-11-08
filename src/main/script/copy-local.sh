@@ -1,0 +1,1 @@
+cp target/*.jar src/main/docker/local

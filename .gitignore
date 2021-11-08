@@ -1,0 +1,14 @@
+# IDEA
+.idea/
+*.iml
+target/
+
+# These files can be stored into docker folders
+**/*.class
+**/*.jar
+
+# Some project's stuff
+**/local.env
+**/production.env
+db/
+• assets •/
