@@ -3,11 +3,18 @@ package com.scriptorium.pali.service;
 import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.entity.WordDescription;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_STRICT;
+import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
+
 @Service
+@Slf4j
 public class VocabularyService {
     private final WordDescriptionRepo wordDescriptionRepo;
 
@@ -28,12 +35,20 @@ public class VocabularyService {
         wordDescriptionRepo.save(word);
     }
 
+    @Cacheable(CACHE_NAME_PALI_STRICT)
     public List<WordDescription> findByPaliStrict(String pali) {
+        log.debug("Running strict search for {}", pali);
         return wordDescriptionRepo.findByPaliOrderById(pali);
     }
 
+    @Cacheable(CACHE_NAME_PALI_WIDE)
     public List<WordDescription> findByPaliWide(String pali) {
+        log.debug("Running wide search for {}", pali);
         String search = PaliCharsConverter.convertToDiacritic(pali);
         return wordDescriptionRepo.findPaliWide(search);
+    }
+
+    @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE ,CACHE_NAME_PALI_STRICT}, allEntries = true)
+    public void evictWideCache() {
     }
 }
