@@ -11,4 +11,4 @@ target/
 **/local.env
 **/production.env
 db/
-• assets •/
+**/*.log
