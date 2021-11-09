@@ -1,0 +1,6 @@
+# Release Notes
+
+## 0.2-SNAPSHOT
+* Base functionality: search words by diacritic and latin-only characters.
+* It's enough to type only first few chars.
+* Press <code>/help</code> to see latin-to-diacritic table used by search engine.
