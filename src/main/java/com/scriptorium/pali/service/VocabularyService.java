@@ -4,6 +4,8 @@ import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.entity.WordDescription;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,10 @@ import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
 @Slf4j
 public class VocabularyService {
     private final WordDescriptionRepo wordDescriptionRepo;
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired(required = false)
+    private SessionFactory sessionFactory;
 
     public VocabularyService(WordDescriptionRepo wordDescriptionRepo) {
         this.wordDescriptionRepo = wordDescriptionRepo;
@@ -48,7 +54,10 @@ public class VocabularyService {
         return wordDescriptionRepo.findPaliWide(search);
     }
 
-    @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE ,CACHE_NAME_PALI_STRICT}, allEntries = true)
-    public void evictWideCache() {
+    @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE, CACHE_NAME_PALI_STRICT}, allEntries = true)
+    public void evictAllCaches() {
+        if (sessionFactory != null) {
+            sessionFactory.getCache().evictAllRegions();
+        }
     }
 }

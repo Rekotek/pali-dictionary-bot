@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_STRICT;
 import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
@@ -64,7 +66,9 @@ class VocabularyServiceTest {
         var answerTwo = vocabularyService.findByPaliWide(WORD_PALI);
         assertSame(answerOne, answerTwo);
         verify(wordDescriptionRepo, times(1)).findPaliWide(WORD_PALI);
-        var valueInCache = cacheManager.getCache(CACHE_NAME_PALI_WIDE).get(WORD_PALI);
+        Cache cache = cacheManager.getCache(CACHE_NAME_PALI_WIDE);
+        assertNotNull(cache);
+        var valueInCache = cache.get(WORD_PALI);
         assertNotNull(valueInCache);
     }
 
@@ -86,7 +90,7 @@ class VocabularyServiceTest {
     void invalidateCache() {
         var answerOne = vocabularyService.findByPaliWide(WORD_PALI);
         var answerTwo = vocabularyService.findByPaliWide(WORD_PALI);
-        vocabularyService.evictWideCache();
+        vocabularyService.evictAllCaches();
         var answerThree = vocabularyService.findByPaliWide(WORD_PALI);
         assertSame(answerOne, answerTwo);
         assertNotSame(answerOne, answerThree);
@@ -95,7 +99,7 @@ class VocabularyServiceTest {
 
     private void evictAllCaches() {
         for (String name : cacheManager.getCacheNames()) {
-            cacheManager.getCache(name).clear();
+            Objects.requireNonNull(cacheManager.getCache(name)).clear();
         }
     }
 }

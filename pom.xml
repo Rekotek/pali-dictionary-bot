@@ -40,6 +40,9 @@
         <telegrambots.version>5.3.0</telegrambots.version>
 
         <spring-boot.version>2.5.6</spring-boot.version>
+        <cache-api.version>1.1.1</cache-api.version>
+        <ehcache.version>3.9.7</ehcache.version>
+        <hibernate-jcache.version>5.6.1.Final</hibernate-jcache.version>
     </properties>
 
     <build>
@@ -144,12 +147,17 @@
         <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
-            <version>1.1.1</version>
+            <version>${cache-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.9.7</version>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>${hibernate-jcache.version}</version>
         </dependency>
 
         <!-- TEST LAYER -->

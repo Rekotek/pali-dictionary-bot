@@ -4,9 +4,19 @@
         xsi:schemaLocation="
             http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
 
+    <cache alias="default-query-results-region" uses-template="expiryCache"/>
+    <cache alias="default-update-timestamps-region" uses-template="expiryCache"/>
+
+    <cache alias="com.scriptorium.pali.entity.WordDescription">
+        <expiry>
+            <none/>
+        </expiry>
+        <heap>200</heap>
+    </cache>
+
     <cache-template name="expiryCache">
         <expiry>
-            <tti unit="minutes">30</tti>
+            <tti unit="minutes">10</tti>
         </expiry>
         <listeners>
             <listener>
@@ -14,7 +24,6 @@
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
                 <event-ordering-mode>UNORDERED</event-ordering-mode>
                 <events-to-fire-on>CREATED</events-to-fire-on>
-                <events-to-fire-on>UPDATED</events-to-fire-on>
                 <events-to-fire-on>EXPIRED</events-to-fire-on>
                 <events-to-fire-on>REMOVED</events-to-fire-on>
             </listener>
@@ -28,7 +37,7 @@
         <expiry>
             <none/>
         </expiry>
-        <listeners dispatcher-thread-pool="strangePool">
+        <listeners>
             <listener>
                 <class>com.scriptorium.pali.config.CacheEventLogger</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
@@ -39,8 +48,4 @@
         </listeners>
         <heap>50</heap>
     </cache-template>
-
-    <cache alias="pali-wide" uses-template="nonExpiryCache"/>
-    <cache alias="pali-strict" uses-template="expiryCache"/>
-
 </config>
