@@ -34,7 +34,8 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     public PaliVocabularyBot(VocabularyService vocabularyService) {
         this.vocabularyService = vocabularyService;
-        commandContainer = new CommandContainer(new SendMessageServiceImpl(this));
+        commandContainer = new CommandContainer(new SendMessageServiceImpl(this),
+                vocabularyService);
     }
 
     @Override

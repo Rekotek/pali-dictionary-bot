@@ -1,6 +1,8 @@
 package com.scriptorium.pali.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
@@ -11,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WordDescription {
     private static final int MAX_VARCHAR = 1024*1024;
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

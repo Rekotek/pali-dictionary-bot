@@ -3,7 +3,8 @@ package com.scriptorium.pali.engine.bot.command;
 public enum CommandName {
     START("/start", "Начало работы"),
     STOP("/stop", "Приостановить работу и очистить кэш"),
-    HELP("/help", "Помощь");
+    HELP("/help", "Помощь"),
+    CLEAR_CACHE("/clearcache", "Очистить кэш");
 
     private final String value;
     private final String shortDescr;

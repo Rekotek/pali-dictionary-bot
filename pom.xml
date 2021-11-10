@@ -40,6 +40,9 @@
         <telegrambots.version>5.3.0</telegrambots.version>
 
         <spring-boot.version>2.5.6</spring-boot.version>
+        <cache-api.version>1.1.1</cache-api.version>
+        <ehcache.version>3.9.7</ehcache.version>
+        <hibernate-jcache.version>5.6.1.Final</hibernate-jcache.version>
     </properties>
 
     <build>
@@ -136,11 +139,40 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- CACHE -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <version>${cache-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>${hibernate-jcache.version}</version>
+        </dependency>
+
         <!-- TEST LAYER -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+<!--            https://stackoverflow.com/questions/52980064/maven-spring-boot-found-multiple-occurrences-of-org-json-jsonobject-on-the-cl-->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin.external.google</groupId>
+                    <artifactId>android-json</artifactId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
     </dependencies>
