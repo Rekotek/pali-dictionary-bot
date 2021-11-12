@@ -1,7 +1,7 @@
 package com.scriptorium.pali;
 
-import com.scriptorium.pali.config.ProfileResolver;
-import com.scriptorium.pali.engine.SourceFileReader;
+import com.scriptorium.pali.config.ProfileResolverHelper;
+import com.scriptorium.pali.engine.DocumentFileHelper;
 import com.scriptorium.pali.service.VocabularyService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class MainApplication implements CommandLineRunner {
     private ApplicationContext applicationContext;
 
     public static void main(String[] args) {
-        ProfileResolver.build();
+        ProfileResolverHelper.generate();
         SpringApplication.run(MainApplication.class, args);
     }
 
@@ -45,7 +45,7 @@ public class MainApplication implements CommandLineRunner {
         if (vocabularyService.isEmptyDatabase()) {
             LOG.info("Read and parse vocabulary");
             try {
-                SourceFileReader.readDictionaryFile(vocabularyService::saveNewEntry);
+                DocumentFileHelper.readDictionaryFile(vocabularyService::saveNewEntry);
             } catch (FileNotFoundException | InvalidObjectException e) {
                 ((ConfigurableApplicationContext) applicationContext).close();
             }

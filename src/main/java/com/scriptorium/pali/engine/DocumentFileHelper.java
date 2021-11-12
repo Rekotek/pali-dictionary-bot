@@ -1,12 +1,12 @@
 package com.scriptorium.pali.engine;
 
 import com.scriptorium.pali.MainApplication;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.slf4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -15,17 +15,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-public class SourceFileReader {
+@Slf4j
+public class DocumentFileHelper {
     private static final String DICT_FILENAME = "/pali-rus.docx";
-    private static final Logger LOG = getLogger(SourceFileReader.class);
+
+    private DocumentFileHelper() { }
 
     public static void readDictionaryFile(BiConsumer<String, String> processingFunc) throws FileNotFoundException, InvalidObjectException {
             InputStream fis = MainApplication.class.getResourceAsStream(DICT_FILENAME);
             if (fis == null) {
                 String errorMsg = String.format("Dictionary file %s not found!", DICT_FILENAME);
-                LOG.error(errorMsg);
+                log.error(errorMsg);
                 throw new FileNotFoundException(errorMsg);
             }
         try {
@@ -36,7 +36,7 @@ public class SourceFileReader {
                 if("TABLE".equalsIgnoreCase(element.getElementType().name())) {
                     List<XWPFTable> tableList =  element.getBody().getTables();
                     for (XWPFTable table: tableList){
-                        LOG.info("Total Number of Rows: {}", table.getNumberOfRows());
+                        log.info("Total Number of Rows: {}", table.getNumberOfRows());
 
                         for (XWPFTableRow row : table.getRows()) {
                             String paliWord = row.getCell(0).getParagraphs().get(0).getText();
@@ -48,7 +48,7 @@ public class SourceFileReader {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            log.error(e.getMessage());
             throw new InvalidObjectException(e.getMessage());
         }
     }
