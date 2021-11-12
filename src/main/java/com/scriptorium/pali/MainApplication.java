@@ -3,7 +3,7 @@ package com.scriptorium.pali;
 import com.scriptorium.pali.config.ProfileResolverHelper;
 import com.scriptorium.pali.engine.DocumentFileHelper;
 import com.scriptorium.pali.service.VocabularyService;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,12 +16,10 @@ import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 @SuppressWarnings("SpringJavaAutowiringInspection")
+@Slf4j
 @SpringBootApplication
 public class MainApplication implements CommandLineRunner {
-    private static final Logger LOG = getLogger(MainApplication.class);
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -34,7 +32,7 @@ public class MainApplication implements CommandLineRunner {
     public void run(String... args) {
         var loadedProfiles = new ArrayList<>(List.of(applicationContext.getEnvironment().getActiveProfiles()));
         for (var profile : loadedProfiles) {
-            LOG.info("PROFILE: {}", profile);
+            log.info("PROFILE: {}", profile);
         }
         populateDB();
     }
@@ -43,7 +41,7 @@ public class MainApplication implements CommandLineRunner {
         VocabularyService vocabularyService;
         vocabularyService = applicationContext.getBean(VocabularyService.class);
         if (vocabularyService.isEmptyDatabase()) {
-            LOG.info("Read and parse vocabulary");
+            log.info("Read and parse vocabulary");
             try {
                 DocumentFileHelper.readDictionaryFile(vocabularyService::saveNewEntry);
             } catch (FileNotFoundException | InvalidObjectException e) {

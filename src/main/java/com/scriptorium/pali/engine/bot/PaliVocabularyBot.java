@@ -4,7 +4,7 @@ import com.google.common.html.HtmlEscapers;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
 import com.scriptorium.pali.entity.WordDescription;
 import com.scriptorium.pali.service.VocabularyService;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,11 +15,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.List;
 
 import static java.lang.Math.min;
-import static org.slf4j.LoggerFactory.getLogger;
 
+@Slf4j
 @Component
 public class PaliVocabularyBot extends TelegramLongPollingBot {
-    private static final Logger LOG = getLogger(PaliVocabularyBot.class);
 
     public static String COMMAND_PREFIX = "/";
 
@@ -90,7 +89,7 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
                 try {
                     execute(sm);
                 } catch (TelegramApiException e) {
-                    LOG.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
         }

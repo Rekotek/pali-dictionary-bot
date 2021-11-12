@@ -15,8 +15,8 @@ import java.util.List;
 import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_STRICT;
 import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
 
-@Service
 @Slf4j
+@Service
 public class VocabularyService {
     private final WordDescriptionRepo wordDescriptionRepo;
 
