@@ -1,15 +1,13 @@
 package com.scriptorium.pali.engine.bot;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+@Slf4j
 @Service
 public class SendMessageServiceImpl implements SendMessageService {
-    private static final Logger LOG = getLogger(SendMessageServiceImpl.class);
 
     private final PaliVocabularyBot bot;
 
@@ -27,7 +25,7 @@ public class SendMessageServiceImpl implements SendMessageService {
         try {
             bot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            LOG.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 }
