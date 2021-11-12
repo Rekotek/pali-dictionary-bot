@@ -68,60 +68,49 @@ public class PaliStringComparator implements Comparator<String> {
 
     @Override
     public int compare(String s1, String s2) {
-        String strLower1 = s1.toLowerCase(Locale.ROOT);
-        String strLower2 = s2.toLowerCase(Locale.ROOT);
-        strLower1 = strLower1.replace("x", "")
-                .replaceFirst("^-", "").trim();
-        strLower2 = strLower2.replace("x", "")
-                .replaceFirst("^-", "").trim();
+        String strLower1 = simplify(s1);
+        String strLower2 = simplify(s2);
         int length1 = strLower1.length();
         int length2 = strLower2.length();
         int minLength = Math.min(length1, length2);
 
         int idx1 = 0;
         int idx2 = 0;
-        while ( (idx1 < minLength) || (idx2 < minLength)) {
+        while ((idx1 < minLength) || (idx2 < minLength)) {
             char currentChar1 = strLower1.charAt(idx1);
             char currentChar2 = strLower2.charAt(idx2);
+
             if (isInBothSpecialChar(currentChar1, currentChar2)
             ) {
                 idx1++;
                 idx2++;
                 continue;
             }
-            if (currentChar1 == '(' && currentChar2 != '(') return -1;
-            if (currentChar1 != '(' && currentChar2 == '(') return 1;
-            if (currentChar1 == '-' && currentChar2 != '-') return -1;
-            if (currentChar1 != '-' && currentChar2 == '-') return 1;
 
-            CharIndex digitalValue1;
-            CharIndex digitalValue2;
+            int compSpecChar = whichStringHasSpecialChar(currentChar1, currentChar2);
+            if (compSpecChar != 0) {
+                return compSpecChar;
+            }
 
-            if (length1 - idx1 > 1)  {
-                digitalValue1 = getDigitalValue(currentChar1, strLower1.charAt(idx1 + 1));
-            } else {
-                digitalValue1 = getDigitalValue(currentChar1);
-            }
-            if (length2 - idx2 > 1) {
-                digitalValue2 = getDigitalValue(currentChar2, strLower2.charAt(idx2 + 1));
-            } else {
-                digitalValue2 = getDigitalValue(currentChar2);
-            }
+            CharIndex digitalValue1 = getPaliSymbolPosition(strLower1, idx1);
+            CharIndex digitalValue2 = getPaliSymbolPosition(strLower2, idx2);
 
             if (digitalValue1.index != digitalValue2.index) {
                 return digitalValue1.index - digitalValue2.index;
             }
 
-            idx1++;
-            if (digitalValue1.isPaired) {
-                idx1++;
-            }
-            idx2++;
-            if (digitalValue2.isPaired) {
-                idx2++;
-            }
+            idx1 += (digitalValue1.isPaired) ? 2 : 1;
+            idx2 += (digitalValue2.isPaired) ? 2 : 1;
         }
         return length1 - length2;
+    }
+
+    private String simplify(String str) {
+        return str
+                .toLowerCase(Locale.ROOT)
+                .replace("x", "")
+                .replaceFirst("^-", "")
+                .trim();
     }
 
     private boolean isInBothSpecialChar(char currentChar1, char currentChar2) {
@@ -129,5 +118,21 @@ public class PaliStringComparator implements Comparator<String> {
                 || (currentChar1 == '(' && currentChar2 == '(')
                 || (currentChar1 == ')' && currentChar2 == ')')
                 || (currentChar1 == '-' && currentChar2 == '-');
+    }
+
+    private int whichStringHasSpecialChar(char currentChar1, char currentChar2) {
+        if (currentChar1 == '(' && currentChar2 != '(') return -1;
+        if (currentChar1 != '(' && currentChar2 == '(') return 1;
+        if (currentChar1 == '-' && currentChar2 != '-') return -1;
+        if (currentChar1 != '-' && currentChar2 == '-') return 1;
+        return 0;
+    }
+
+    private CharIndex getPaliSymbolPosition(String str, int idx) {
+        if (str.length() - idx > 1) {
+            return getDigitalValue(str.charAt(idx), str.charAt(idx + 1));
+        } else {
+            return getDigitalValue(str.charAt(idx));
+        }
     }
 }
