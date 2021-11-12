@@ -7,8 +7,8 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_STRICT;
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_STRICT;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
 
 @TestConfiguration
 @EnableCaching

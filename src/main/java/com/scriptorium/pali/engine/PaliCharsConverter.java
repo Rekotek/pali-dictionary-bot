@@ -4,6 +4,8 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
 
 public class PaliCharsConverter {
+    private PaliCharsConverter() { }
+
     private static final Map<String, String> toLatinMap = Map.ofEntries(
         new SimpleImmutableEntry<>("ā", "a"),
         new SimpleImmutableEntry<>("A", "a"),

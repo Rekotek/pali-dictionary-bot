@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_STRICT;
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_STRICT;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
 
 @Service
 @Slf4j

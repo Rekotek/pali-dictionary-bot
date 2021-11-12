@@ -15,8 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_STRICT;
-import static com.scriptorium.pali.config.CacheTuning.CACHE_NAME_PALI_WIDE;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_STRICT;
+import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

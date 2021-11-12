@@ -160,11 +160,8 @@ class PaliStringComparatorTest {
     @Test
     void expectedUncorrectedChar() {
         String[] strings = {"seṭṭhatā", "susirarukkho", "seṭṭHAz"};
-        var exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            List<String> sortedList = Arrays.stream(strings)
-                    .sorted(new PaliStringComparator())
-                    .toList();
-        });
+        var exception = Assertions.assertThrows(IllegalArgumentException.class, Arrays.stream(strings)
+                .sorted(new PaliStringComparator())::toList);
 
         Assertions.assertEquals("Unknown char: z", exception.getMessage());
     }
