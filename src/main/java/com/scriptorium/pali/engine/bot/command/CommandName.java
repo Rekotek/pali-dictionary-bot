@@ -4,7 +4,8 @@ public enum CommandName {
     START("/start", "Начало работы"),
     STOP("/stop", "Приостановить работу и очистить кэш"),
     HELP("/help", "Помощь"),
-    CLEAR_CACHE("/clearcache", "Очистить кэш");
+    CLEAR_CACHE("/clearcache", "Очистить кэш"),
+    NOUN_CASES("/noun", "Склонение существительных, введите род и тип окончания");
 
     private final String value;
     private final String shortDescr;

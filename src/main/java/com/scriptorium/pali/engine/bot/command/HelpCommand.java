@@ -2,21 +2,20 @@ package com.scriptorium.pali.engine.bot.command;
 
 import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.engine.bot.SendMessageService;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
 
 import static com.scriptorium.pali.engine.bot.command.CommandName.*;
 
-public class HelpCommand implements Command {
+public class HelpCommand extends AbstractMessagingCommand {
     private final String HELP_MSG;
 
-    private final SendMessageService sendMessageService;
-
     public HelpCommand(SendMessageService sendMessageService) {
-        this.sendMessageService = sendMessageService;
+        super(sendMessageService);
         var topCommands = START.getHelpDescription() +
-                STOP.getHelpDescription() + HELP.getHelpDescription();
+                STOP.getHelpDescription() +
+                NOUN_CASES.getHelpDescription() +
+                HELP.getHelpDescription();
         StringBuilder sb = new StringBuilder("<code>");
         for (Map.Entry<String, String> entry : PaliCharsConverter.fromLatinMap.entrySet()) {
             String newLine = "\t" + entry.getKey() + " → " + entry.getValue() + "\n";
@@ -28,7 +27,12 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(Update update) {
-        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), HELP_MSG);
+    protected String generateAnswer() {
+        return HELP_MSG;
     }
+//
+//    @Override
+//    public void execute(Update update) {
+//        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), HELP_MSG);
+//    }
 }

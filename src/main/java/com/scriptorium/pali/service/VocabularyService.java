@@ -50,8 +50,7 @@ public class VocabularyService {
     @Cacheable(CACHE_NAME_PALI_WIDE)
     public List<WordDescription> findByPaliWide(String pali) {
         log.debug("Running wide search for {}", pali);
-        String search = PaliCharsConverter.convertToDiacritic(pali);
-        return wordDescriptionRepo.findPaliWide(search);
+        return wordDescriptionRepo.findPaliWide(pali);
     }
 
     @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE, CACHE_NAME_PALI_STRICT}, allEntries = true)

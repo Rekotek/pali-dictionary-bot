@@ -1,6 +1,7 @@
 package com.scriptorium.pali.engine.bot;
 
 import com.google.common.html.HtmlEscapers;
+import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
 import com.scriptorium.pali.entity.WordDescription;
 import com.scriptorium.pali.service.VocabularyService;
@@ -19,8 +20,7 @@ import static java.lang.Math.min;
 @Slf4j
 @Component
 public class PaliVocabularyBot extends TelegramLongPollingBot {
-
-    public static String COMMAND_PREFIX = "/";
+    private static final String COMMAND_PREFIX = "/";
 
     @Value("${bot.username}")
     private String username;
@@ -33,7 +33,8 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     public PaliVocabularyBot(VocabularyService vocabularyService) {
         this.vocabularyService = vocabularyService;
-        commandContainer = new CommandContainer(new SendMessageServiceImpl(this),
+        commandContainer = new CommandContainer(
+                new SendMessageServiceImpl(this),
                 vocabularyService);
     }
 
@@ -49,49 +50,73 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message = update.getMessage().getText().trim();
-            String chatId = update.getMessage().getChatId().toString();
+        var telRec = parseUpdate(update);
+        if (telRec == null) return;
 
-            if (message.startsWith(COMMAND_PREFIX)) {
-                String commandIdentifier = message.split(" ")[0].toLowerCase();
+        if (telRec.message.startsWith(COMMAND_PREFIX)) {
+            String commandIdentifier = telRec.message.split(" ")[0].toLowerCase();
 
-                commandContainer.retrieveCommand(commandIdentifier).execute(update);
-            } else {
-                SendMessage sm = new SendMessage();
-                sm.setChatId(chatId);
-
-                List<WordDescription> translations = vocabularyService.findByPaliWide(message);
-                StringBuilder answer = new StringBuilder();
-                int stringLength = translations.stream()
-                        .map(w -> w.getPali() + " " + w.getTranslation())
-                        .reduce("", String::concat)
-                        .length();
-                if (stringLength > 2048) {
-                    answer.append("<b>Слишком много значений!</b>\n");
-                    int len = min(10, translations.size());
-                    answer.append(String.format("Будет выведены результат для первых <b>%d</b> слов.\n\n", len));
-                    translations.removeAll(translations.subList(len, translations.size()));
-                }
-                translations.forEach(row -> {
-                    String paliHead = "<b>" + row.getPali() + "</b>\n";
-                    String translationBody = HtmlEscapers.htmlEscaper().escape(row.getTranslation());
-                    answer.append(paliHead);
-                    answer.append(translationBody);
-                    answer.append("\n\n");
-                });
-                if (answer.isEmpty()) {
-                    answer.append(String.format("Не найдено слово: <code>%s</code>", message));
-                }
-                sm.enableHtml(true);
-                sm.setText(answer.toString().trim());
-
-                try {
-                    execute(sm);
-                } catch (TelegramApiException e) {
-                    log.error(e.getMessage());
-                }
+            commandContainer.retrieveCommand(commandIdentifier).execute(update);
+        } else {
+            String answer = retrieveTranslations(telRec.message);
+            SendMessage sm = new SendMessage();
+            sm.setChatId(telRec.chatId);
+            sm.enableHtml(true);
+            sm.setText(answer);
+            try {
+                execute(sm);
+            } catch (TelegramApiException e) {
+                log.error(e.getMessage());
             }
         }
+    }
+
+    private record TelRec(String message, String chatId) {}
+
+    private TelRec parseUpdate(Update update) {
+        String message;
+        String chatId;
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            message = update.getMessage().getText().trim();
+            chatId = update.getMessage().getChatId().toString();
+        } else if (update.hasEditedMessage() && update.getEditedMessage().hasText()) {
+            message = update.getEditedMessage().getText().trim();
+            chatId = update.getEditedMessage().getChatId().toString();
+        } else
+            return null;
+        return new TelRec(message, chatId);
+    }
+
+    private String retrieveTranslations(String inputWord) {
+        List<WordDescription> translations;
+        inputWord = PaliCharsConverter.convertToDiacritic(inputWord);
+        if (inputWord.endsWith("!")) {
+            inputWord = inputWord.substring(0, inputWord.length() - 1);
+            translations = vocabularyService.findByPaliStrict(inputWord);
+        } else {
+            translations = vocabularyService.findByPaliWide(inputWord);
+        }
+        StringBuilder answer = new StringBuilder();
+        int stringLength = translations.stream()
+                .map(w -> w.getPali() + " " + w.getTranslation())
+                .reduce("", String::concat)
+                .length();
+        if (stringLength > 2048) {
+            answer.append("<b>Слишком много значений!</b>\n");
+            int len = min(10, translations.size());
+            answer.append(String.format("Будет выведены результат для первых <b>%d</b> слов.\n\n", len));
+            translations.removeAll(translations.subList(len, translations.size()));
+        }
+        translations.forEach(row -> {
+            String paliHead = "<b>" + row.getPali() + "</b>\n";
+            String translationBody = HtmlEscapers.htmlEscaper().escape(row.getTranslation());
+            answer.append(paliHead);
+            answer.append(translationBody);
+            answer.append("\n\n");
+        });
+        if (answer.isEmpty()) {
+            answer.append(String.format("Не найдено слово: <code>%s</code>", inputWord));
+        }
+        return answer.toString().trim();
     }
 }

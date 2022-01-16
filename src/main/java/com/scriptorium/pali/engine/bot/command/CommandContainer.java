@@ -17,7 +17,8 @@ public class CommandContainer {
                 new AbstractMap.SimpleImmutableEntry<>(START.getValue(), new StartCommand(sendMessageService)),
                 new AbstractMap.SimpleImmutableEntry<>(STOP.getValue(), new StopCommand(sendMessageService)),
                 new AbstractMap.SimpleImmutableEntry<>(CLEAR_CACHE.getValue(), new ClearCacheCommand(sendMessageService, vocabularyService)),
-                new AbstractMap.SimpleImmutableEntry<>(HELP.getValue(), new HelpCommand(sendMessageService))
+                new AbstractMap.SimpleImmutableEntry<>(HELP.getValue(), new HelpCommand(sendMessageService)),
+                new AbstractMap.SimpleImmutableEntry<>(NOUN_CASES.getValue(), new NounCasesCommand(sendMessageService))
         );
         unknownCommand = new UnknownCommand(sendMessageService);
     }

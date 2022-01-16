@@ -1,6 +1,10 @@
 # Release Notes
 
-##0.3-SNAPSHOT
+## 0.4-SNAPSHOT
+* New command `/noun` applied
+* Add declensions for _m_ noun with _-a_ ending
+
+## 0.3-SNAPSHOT
 * Add Spring Cache
 * Add Hibernate 2nd level cache
 * Add special command `/clearcache` to the bot for evicting both caches.
