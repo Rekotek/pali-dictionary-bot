@@ -1,6 +1,7 @@
 package com.scriptorium.pali.engine.bot;
 
 import com.google.common.html.HtmlEscapers;
+import com.scriptorium.pali.comparator.WordDescriptionComparator;
 import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
 import com.scriptorium.pali.entity.WordDescription;
@@ -58,7 +59,7 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
             commandContainer.retrieveCommand(commandIdentifier).execute(update);
         } else {
-            String answer = retrieveTranslations(telRec.message);
+            var answer = retrieveTranslations(telRec.message);
             SendMessage sm = new SendMessage();
             sm.setChatId(telRec.chatId);
             sm.enableHtml(true);
@@ -89,13 +90,23 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     private String retrieveTranslations(String inputWord) {
         List<WordDescription> translations;
-        inputWord = PaliCharsConverter.convertToDiacritic(inputWord);
-        if (inputWord.endsWith("!")) {
-            inputWord = inputWord.substring(0, inputWord.length() - 1);
-            translations = vocabularyService.findByPaliStrict(inputWord);
+        var firstChar = inputWord.charAt(0);
+        if (Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(firstChar))) {
+            translations = vocabularyService.findInsideTranslation(inputWord);
         } else {
-            translations = vocabularyService.findByPaliWide(inputWord);
+            inputWord = PaliCharsConverter.convertToDiacritic(inputWord);
+            if (inputWord.endsWith("!")) {
+                inputWord = inputWord.substring(0, inputWord.length() - 1);
+                translations = vocabularyService.findByPaliStrict(inputWord);
+            } else {
+                translations = vocabularyService.findByPaliWide(inputWord);
+            }
         }
+        translations.sort(new WordDescriptionComparator());
+        return makeAnswer(inputWord, translations);
+    }
+
+    private String makeAnswer(String inputWord, List<WordDescription> translations) {
         StringBuilder answer = new StringBuilder();
         int stringLength = translations.stream()
                 .map(w -> w.getPali() + " " + w.getTranslation())
