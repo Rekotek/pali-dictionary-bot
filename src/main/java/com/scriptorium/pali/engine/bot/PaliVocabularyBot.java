@@ -61,7 +61,13 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
                 SendMessage sm = new SendMessage();
                 sm.setChatId(chatId);
 
-                List<WordDescription> translations = vocabularyService.findByPaliWide(message);
+                List<WordDescription> translations;
+                char firstChar = message.charAt(0);
+                if (Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(firstChar))) {
+                    translations = vocabularyService.findInsideTranslation(message);
+                } else {
+                    translations = vocabularyService.findByPaliWide(message);
+                }
                 StringBuilder answer = new StringBuilder();
                 int stringLength = translations.stream()
                         .map(w -> w.getPali() + " " + w.getTranslation())
