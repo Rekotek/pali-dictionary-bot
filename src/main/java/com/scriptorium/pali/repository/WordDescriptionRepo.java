@@ -18,4 +18,8 @@ public interface WordDescriptionRepo extends CrudRepository<WordDescription, Lon
     @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true")})
     @Query("select distinct w from WordDescription w where (w.pali like ?1%) or (w.simplified like ?1%) order by w.id")
     List<WordDescription> findPaliWide(String pali);
+
+    @QueryHints(value = {@QueryHint(name = HINT_CACHEABLE, value = "true")})
+    @Query(value = "select * from word_description as w where w.translation ~* ?1", nativeQuery = true)
+    List<WordDescription> findInsideTranslation(String word);
 }

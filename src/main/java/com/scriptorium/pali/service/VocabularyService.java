@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_STRICT;
 import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
@@ -51,6 +52,13 @@ public class VocabularyService {
     public List<WordDescription> findByPaliWide(String pali) {
         log.debug("Running wide search for {}", pali);
         return wordDescriptionRepo.findPaliWide(pali);
+    }
+
+    @Cacheable(CACHE_NAME_PALI_STRICT)
+    public List<WordDescription> findInsideTranslation(String word) {
+        log.debug("Running cyrillic search for {}", word);
+        var searchWord = "\\m" + word.toLowerCase(Locale.ROOT) + "\\M";
+        return wordDescriptionRepo.findInsideTranslation(searchWord);
     }
 
     @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE, CACHE_NAME_PALI_STRICT}, allEntries = true)
