@@ -13,6 +13,9 @@ public class NounCasesCommand extends AbstractMessagingCommand {
 
     @Override
     protected String generateAnswer() {
+        if (word == null) {
+            return "Уточните команду";
+        }
         int lastChar = word.length() - 1;
         String ending;
         if (word.charAt(lastChar) == 'ṃ') {
