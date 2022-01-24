@@ -16,7 +16,9 @@ import javax.persistence.*;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WordDescription {
     private static final int MAX_VARCHAR = 1024*1024;
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+
+    @SequenceGenerator(name = "gen_word_desc", sequenceName = "word_description_sequence", allocationSize = 2)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_word_desc")
     @Id
     private Long id;
 
