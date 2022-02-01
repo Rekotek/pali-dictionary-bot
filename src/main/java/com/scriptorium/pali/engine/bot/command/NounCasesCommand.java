@@ -1,7 +1,8 @@
 package com.scriptorium.pali.engine.bot.command;
 
+import com.scriptorium.pali.EndingTypeHelper;
 import com.scriptorium.pali.engine.bot.SendMessageService;
-import com.scriptorium.pali.engine.gramma.enums.NounTypes;
+import com.scriptorium.pali.enums.EndingType;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class NounCasesCommand extends AbstractMessagingCommand {
@@ -16,15 +17,13 @@ public class NounCasesCommand extends AbstractMessagingCommand {
         if (word == null) {
             return "Уточните команду";
         }
-        int lastChar = word.length() - 1;
-        String ending;
-        if (word.charAt(lastChar) == 'ṃ') {
-            ending = word.substring(lastChar - 1, lastChar + 1);
-        } else {
-            ending = "" + word.charAt(lastChar);
+        EndingType endingType;
+        try {
+            endingType = EndingTypeHelper.indentify(word);
+        } catch (IllegalArgumentException _e) {
+            return "Не смог определить окончание слова";
         }
-        NounTypes nounType = NounTypes.getNounTypeByForm(ending);
-        return String.format("Noun command found: %s with type of %s", word, nounType);
+        return String.format("Noun command found: %s with type of %s", word, endingType);
     }
 
     @Override

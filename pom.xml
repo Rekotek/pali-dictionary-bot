@@ -110,6 +110,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.scriptorium.pali</groupId>
+            <artifactId>grammar-forms</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
