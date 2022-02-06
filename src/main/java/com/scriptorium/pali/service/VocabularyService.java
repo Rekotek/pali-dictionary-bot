@@ -29,10 +29,6 @@ public class VocabularyService {
         this.wordDescriptionRepo = wordDescriptionRepo;
     }
 
-    public boolean isEmptyDatabase() {
-        return wordDescriptionRepo.count() == 0;
-    }
-
     public void saveNewEntry(String pali, String translation) {
         WordDescription word = WordDescription.builder()
                 .pali(pali.trim())

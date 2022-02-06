@@ -38,14 +38,14 @@ class VocabularyServiceTest {
 
     @BeforeEach
     void setUp() {
-        var word1 = new WordDescription(1L, WORD_PALI, WORD_PALI, "First description");
-        var word2 = new WordDescription(2L, WORD_PALI, WORD_PALI, "Second description");
+        var word1 = new WordDescription(1L, WORD_PALI, WORD_PALI, "First description", 1);
+        var word2 = new WordDescription(2L, WORD_PALI, WORD_PALI, "Second description", 1);
         var answer1 = new ArrayList<WordDescription>(1);
         answer1.add(word1);
         var answer2 = new ArrayList<WordDescription>(1);
         answer2.add(word2);
         when(wordDescriptionRepo.findPaliWide(WORD_PALI)).thenReturn(answer1, answer2);
-        var newWord = new WordDescription(3L, DIACRITIC_WORD_PAALI, WORD_PAALI, "Another description");
+        var newWord = new WordDescription(3L, DIACRITIC_WORD_PAALI, WORD_PAALI, "Another description", 1);
         var newAnswer = new ArrayList<WordDescription>(1);
         newAnswer.add(newWord);
         when(wordDescriptionRepo.findPaliWide(WORD_PAALI)).thenReturn(newAnswer);

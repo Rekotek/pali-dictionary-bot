@@ -28,4 +28,6 @@ public class WordDescription {
 
     @Column(length = MAX_VARCHAR)
     private String translation;
+
+    private Integer level;
 }
