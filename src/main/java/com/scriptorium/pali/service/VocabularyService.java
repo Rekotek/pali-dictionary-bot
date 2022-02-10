@@ -2,9 +2,12 @@ package com.scriptorium.pali.service;
 
 import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.entity.dto.WordDescriptionDto;
+import com.scriptorium.pali.entity.mapper.WordDescriptionMapper;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +23,7 @@ import static com.scriptorium.pali.config.CacheHelper.CACHE_NAME_PALI_WIDE;
 @Service
 public class VocabularyService {
     private final WordDescriptionRepo wordDescriptionRepo;
+    private final WordDescriptionMapper mapper;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired(required = false)
@@ -27,36 +31,39 @@ public class VocabularyService {
 
     public VocabularyService(WordDescriptionRepo wordDescriptionRepo) {
         this.wordDescriptionRepo = wordDescriptionRepo;
+        mapper = Mappers.getMapper(WordDescriptionMapper.class);
     }
 
     public void saveNewEntry(String pali, String translation) {
         WordDescription word = WordDescription.builder()
                 .pali(pali.trim())
-                .simplified(PaliCharsConverter.simplify(pali))
                 .translation(translation.trim())
                 .build();
         wordDescriptionRepo.save(word);
     }
 
     @Cacheable(CACHE_NAME_PALI_STRICT)
-    public List<WordDescription> findByPaliStrict(String pali) {
+    public List<WordDescriptionDto> findByPaliStrict(String pali) {
         log.debug("Running strict search for {}", pali);
         var diacriticWord = PaliCharsConverter.convertToDiacritic(pali);
-        return wordDescriptionRepo.findByPaliOrderById(diacriticWord);
+        List<WordDescription> wordList = wordDescriptionRepo.findByPaliOrderById(diacriticWord);
+        return mapper.mapFromDb(wordList);
     }
 
     @Cacheable(CACHE_NAME_PALI_WIDE)
-    public List<WordDescription> findByPaliWide(String pali) {
+    public List<WordDescriptionDto> findByPaliWide(String pali) {
         log.debug("Running wide search for {}", pali);
         var diacriticWord = PaliCharsConverter.convertToDiacritic(pali);
-        return wordDescriptionRepo.findPaliWide(diacriticWord);
+        List<WordDescription> wordList = wordDescriptionRepo.findPaliWide(diacriticWord);
+        return mapper.mapFromDb(wordList);
     }
 
     @Cacheable(CACHE_NAME_PALI_STRICT)
-    public List<WordDescription> findInsideTranslation(String word) {
+    public List<WordDescriptionDto> findInsideTranslation(String word) {
         log.debug("Running cyrillic search for {}", word);
         var searchWord = "\\m" + word.toLowerCase(Locale.ROOT) + "\\M";
-        return wordDescriptionRepo.findInsideTranslation(searchWord);
+        List<WordDescription> wordList = wordDescriptionRepo.findInsideTranslation(searchWord);
+        return mapper.mapFromDb(wordList);
     }
 
     @CacheEvict(cacheNames = {CACHE_NAME_PALI_WIDE, CACHE_NAME_PALI_STRICT}, allEntries = true)

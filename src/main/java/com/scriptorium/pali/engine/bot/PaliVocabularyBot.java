@@ -1,8 +1,8 @@
 package com.scriptorium.pali.engine.bot;
 
-import com.scriptorium.pali.comparator.WordDescriptionComparator;
+import com.scriptorium.pali.comparator.WordDescriptionDtoComparator;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
-import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.entity.dto.WordDescriptionDto;
 import com.scriptorium.pali.service.VocabularyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +87,7 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
     }
 
     private String retrieveTranslations(String inputWord) {
-        List<WordDescription> translations;
+        List<WordDescriptionDto> translations;
         var firstChar = inputWord.charAt(0);
         if (Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(firstChar))) {
             translations = vocabularyService.findInsideTranslation(inputWord);
@@ -99,11 +99,11 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
                 translations = vocabularyService.findByPaliWide(inputWord);
             }
         }
-        translations.sort(new WordDescriptionComparator());
+        translations.sort(new WordDescriptionDtoComparator());
         return makeAnswer(inputWord, translations);
     }
 
-    private String makeAnswer(String inputWord, List<WordDescription> translations) {
+    private String makeAnswer(String inputWord, List<WordDescriptionDto> translations) {
         StringBuilder answer = new StringBuilder();
         int stringLength = translations.stream()
                 .map(w -> w.getPali() + " " + w.getTranslation())

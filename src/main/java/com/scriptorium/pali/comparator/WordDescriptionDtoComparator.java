@@ -1,12 +1,12 @@
 package com.scriptorium.pali.comparator;
 
-import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.entity.dto.WordDescriptionDto;
 
 import java.util.Comparator;
 
-public class WordDescriptionComparator implements Comparator<WordDescription> {
+public class WordDescriptionDtoComparator implements Comparator<WordDescriptionDto> {
     @Override
-    public int compare(WordDescription w1, WordDescription w2) {
+    public int compare(WordDescriptionDto w1, WordDescriptionDto w2) {
         String pali1 = w1.getPali();
         String pali2 = w2.getPali();
 
