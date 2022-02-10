@@ -1,38 +1,63 @@
 package com.scriptorium.pali.engine.bot.command;
 
-import com.scriptorium.pali.EndingTypeHelper;
+import com.scriptorium.pali.NounCases;
+import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.engine.bot.SendMessageService;
-import com.scriptorium.pali.enums.EndingType;
+import com.scriptorium.pali.enums.Gender;
+import com.scriptorium.pali.enums.NumberType;
+import com.scriptorium.pali.enums.WordCase;
+import com.scriptorium.pali.service.VocabularyService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class NounCasesCommand extends AbstractMessagingCommand {
-    private String word;
+import java.util.List;
 
-    public NounCasesCommand(SendMessageService sendMessageService) {
+public class NounCasesCommand extends AbstractMessagingCommand {
+    private final VocabularyService vocabularyService;
+
+    private String dhatuWord;
+    private Gender gender;
+
+    public NounCasesCommand(final SendMessageService sendMessageService, final VocabularyService vocService) {
         super(sendMessageService);
+        this.vocabularyService = vocService;
     }
 
     @Override
     protected String generateAnswer() {
-        if (word == null) {
-            return "Уточните команду";
+        if ( (dhatuWord == null) || (gender == null)) {
+            return "Использование: <code>/noun &lt;основа слова (dhatu)&gt; &lt;m|n|f&gt;</code>";
         }
-        EndingType endingType;
         try {
-            endingType = EndingTypeHelper.indentify(word);
-        } catch (IllegalArgumentException _e) {
-            return "Не смог определить окончание слова";
+            var output = new StringBuilder();
+            var nounCases = new NounCases(dhatuWord, gender);
+            var wordsByDhatu = vocabularyService.findByPaliStrict(dhatuWord);
+            if (wordsByDhatu.size() == 1) {
+                output.append(wordsByDhatu.get(0).toString());
+                output.append("\n");
+            } else {
+                List<String> nomForms = nounCases.getFormsFor(WordCase.NOM, NumberType.SG);
+                var wordsByNom = vocabularyService.findByPaliStrict(nomForms.get(0));
+                if (wordsByNom.size() > 0) {
+                    output.append(wordsByNom.get(0).toString());
+                    output.append("\n");
+                }
+            }
+            output.append(nounCases.toHtml());
+            return output.toString();
+        } catch (IllegalArgumentException exception) {
+            return exception.getMessage();
         }
-        return String.format("Noun command found: %s with type of %s", word, endingType);
     }
 
     @Override
     public void execute(Update update) {
         String[] commandString = update.getMessage().getText().trim().split(" ");
-        if (commandString.length == 1) {
-            word = null;
+        if (commandString.length != 3) {
+            dhatuWord = null;
         } else {
-            word = commandString[1];
+            dhatuWord = PaliCharsConverter.convertToDiacritic(commandString[1]);
+            var genderSymbol = commandString[2];
+            gender = Gender.from(genderSymbol);
         }
         sendMessageService.sendMessage(update.getMessage().getChatId().toString(), generateAnswer());
     }

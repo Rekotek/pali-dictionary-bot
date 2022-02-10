@@ -1,8 +1,6 @@
 package com.scriptorium.pali.engine.bot;
 
-import com.google.common.html.HtmlEscapers;
 import com.scriptorium.pali.comparator.WordDescriptionComparator;
-import com.scriptorium.pali.engine.PaliCharsConverter;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
 import com.scriptorium.pali.entity.WordDescription;
 import com.scriptorium.pali.service.VocabularyService;
@@ -74,7 +72,7 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     private record TelRec(String message, String chatId) {}
 
-    private TelRec parseUpdate(Update update) {
+    private TelRec parseUpdate(final Update update) {
         String message;
         String chatId;
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -94,7 +92,6 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
         if (Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(firstChar))) {
             translations = vocabularyService.findInsideTranslation(inputWord);
         } else {
-            inputWord = PaliCharsConverter.convertToDiacritic(inputWord);
             if (inputWord.endsWith("!")) {
                 inputWord = inputWord.substring(0, inputWord.length() - 1);
                 translations = vocabularyService.findByPaliStrict(inputWord);
@@ -120,9 +117,8 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
         }
         translations.forEach(row -> {
             String paliHead = "<b>" + row.getPali() + "</b>\n";
-            String translationBody = HtmlEscapers.htmlEscaper().escape(row.getTranslation());
             answer.append(paliHead);
-            answer.append(translationBody);
+            answer.append(row.getTranslation());
             answer.append("\n\n");
         });
         if (answer.isEmpty()) {

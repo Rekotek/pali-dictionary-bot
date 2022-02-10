@@ -11,18 +11,18 @@ public class CommandContainer {
     private final Map<String, Command> commandMap;
     private final Command unknownCommand;
 
-    public CommandContainer(SendMessageService sendMessageService, VocabularyService vocabularyService) {
+    public CommandContainer(final SendMessageService sendMessageService, final VocabularyService vocabularyService) {
         commandMap = Map.of(
                 START.getValue(), new StartCommand(sendMessageService),
                 STOP.getValue(), new StopCommand(sendMessageService),
                 CLEAR_CACHE.getValue(), new ClearCacheCommand(sendMessageService, vocabularyService),
                 HELP.getValue(), new HelpCommand(sendMessageService),
-                NOUN_CASES.getValue(), new NounCasesCommand(sendMessageService)
+                NOUN_CASES.getValue(), new NounCasesCommand(sendMessageService, vocabularyService)
         );
         unknownCommand = new UnknownCommand(sendMessageService);
     }
 
-    public Command retrieveCommand(String commandIdentifier) {
+    public Command retrieveCommand(final String commandIdentifier) {
         return commandMap.getOrDefault(commandIdentifier, unknownCommand);
     }
 }

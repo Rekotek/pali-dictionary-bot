@@ -5,14 +5,14 @@ public enum CommandName {
     STOP("/stop", "Приостановить работу и очистить кэш"),
     HELP("/help", "Помощь"),
     CLEAR_CACHE("/clearcache", "Очистить кэш"),
-    NOUN_CASES("/noun", "Склонение существительных, введите род и тип окончания");
+    NOUN_CASES("/noun", "Склонение существительных: введите основу и род в виде m|n|f");
 
     private final String value;
     private final String shortDescr;
 
-    CommandName(String commandName, String shortDescr) {
-        this.value = commandName;
-        this.shortDescr = shortDescr;
+    CommandName(final String cmd, final String descr) {
+        this.value = cmd;
+        this.shortDescr = descr;
     }
 
     public String getValue() {

@@ -1,5 +1,6 @@
 package com.scriptorium.pali.entity;
 
+import com.scriptorium.pali.enums.WordForm;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -30,4 +31,7 @@ public class WordDescription {
     private String translation;
 
     private Integer level;
+
+    @Enumerated(EnumType.STRING)
+    private WordForm wordForm;
 }

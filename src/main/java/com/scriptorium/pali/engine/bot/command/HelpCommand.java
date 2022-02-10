@@ -10,8 +10,8 @@ import static com.scriptorium.pali.engine.bot.command.CommandName.*;
 public class HelpCommand extends AbstractMessagingCommand {
     private final String HELP_MSG;
 
-    public HelpCommand(SendMessageService sendMessageService) {
-        super(sendMessageService);
+    public HelpCommand(final SendMessageService messageService) {
+        super(messageService);
         var topCommands = START.getHelpDescription() +
                 STOP.getHelpDescription() +
                 NOUN_CASES.getHelpDescription() +

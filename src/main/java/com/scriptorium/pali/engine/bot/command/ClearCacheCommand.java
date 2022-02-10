@@ -9,7 +9,7 @@ public class ClearCacheCommand extends AbstractMessagingCommand {
 
     private final VocabularyService vocabularyService;
 
-    public ClearCacheCommand(SendMessageService sendMessageService, VocabularyService vocabularyService) {
+    public ClearCacheCommand(final SendMessageService sendMessageService, final VocabularyService vocabularyService) {
         super(sendMessageService);
         this.vocabularyService = vocabularyService;
     }
@@ -20,7 +20,7 @@ public class ClearCacheCommand extends AbstractMessagingCommand {
     }
 
     @Override
-    public void execute(Update update) {
+    public void execute(final Update update) {
         vocabularyService.evictAllCaches();
         sendMessageService.sendMessage(update.getMessage().getChatId().toString(), generateAnswer());
     }

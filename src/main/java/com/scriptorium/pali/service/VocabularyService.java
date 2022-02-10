@@ -41,13 +41,15 @@ public class VocabularyService {
     @Cacheable(CACHE_NAME_PALI_STRICT)
     public List<WordDescription> findByPaliStrict(String pali) {
         log.debug("Running strict search for {}", pali);
-        return wordDescriptionRepo.findByPaliOrderById(pali);
+        var diacriticWord = PaliCharsConverter.convertToDiacritic(pali);
+        return wordDescriptionRepo.findByPaliOrderById(diacriticWord);
     }
 
     @Cacheable(CACHE_NAME_PALI_WIDE)
     public List<WordDescription> findByPaliWide(String pali) {
         log.debug("Running wide search for {}", pali);
-        return wordDescriptionRepo.findPaliWide(pali);
+        var diacriticWord = PaliCharsConverter.convertToDiacritic(pali);
+        return wordDescriptionRepo.findPaliWide(diacriticWord);
     }
 
     @Cacheable(CACHE_NAME_PALI_STRICT)
@@ -63,4 +65,22 @@ public class VocabularyService {
             sessionFactory.getCache().evictAllRegions();
         }
     }
+//
+//    public void replaceSpecialCharacters() {
+//        Iterable<WordDescription> words = wordDescriptionRepo.findAll();
+//        for (WordDescription word : words) {
+//            String translation = word.getTranslation();
+//            if (translation.contains(">") || translation.contains("<")) {
+//                var newTranslation = translation.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+//                word.setTranslation(newTranslation);
+//                wordDescriptionRepo.save(word);
+//                log.info("Found for word: {}", word.getPali());
+//            }
+//        }
+//    }
+//    @PostConstruct
+//    public void run() {
+//        log.info("======= REPLACE STARTED =======");
+//        replaceSpecialCharacters();
+//    }
 }
