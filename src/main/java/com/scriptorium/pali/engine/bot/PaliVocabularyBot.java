@@ -115,12 +115,7 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
             answer.append(String.format("Будет выведены результат для первых <b>%d</b> слов.\n\n", len));
             translations.removeAll(translations.subList(len, translations.size()));
         }
-        translations.forEach(row -> {
-            String paliHead = "<b>" + row.getPali() + "</b>\n";
-            answer.append(paliHead);
-            answer.append(row.getTranslation());
-            answer.append("\n\n");
-        });
+        translations.forEach(row -> answer.append(row.toHtml()));
         if (answer.isEmpty()) {
             answer.append(String.format("Не найдено слово: <code>%s</code>", inputWord));
         }

@@ -32,14 +32,12 @@ public class NounCasesCommand extends AbstractMessagingCommand {
             var nounCases = new NounCases(dhatuWord, gender);
             var wordsByDhatu = vocabularyService.findByPaliStrict(dhatuWord);
             if (wordsByDhatu.size() == 1) {
-                output.append(wordsByDhatu.get(0).toString());
-                output.append("\n");
+                output.append(wordsByDhatu.get(0).toHtml());
             } else {
                 List<String> nomForms = nounCases.getFormsFor(WordCase.NOM, NumberType.SG);
                 var wordsByNom = vocabularyService.findByPaliStrict(nomForms.get(0));
                 if (wordsByNom.size() > 0) {
-                    output.append(wordsByNom.get(0).toString());
-                    output.append("\n");
+                    output.append(wordsByNom.get(0).toHtml());
                 }
             }
             output.append(nounCases.toHtml());

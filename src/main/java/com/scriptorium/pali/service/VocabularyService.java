@@ -7,7 +7,6 @@ import com.scriptorium.pali.entity.mapper.WordDescriptionMapper;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,9 +28,9 @@ public class VocabularyService {
     @Autowired(required = false)
     private SessionFactory sessionFactory;
 
-    public VocabularyService(WordDescriptionRepo wordDescriptionRepo) {
-        this.wordDescriptionRepo = wordDescriptionRepo;
-        mapper = Mappers.getMapper(WordDescriptionMapper.class);
+    public VocabularyService(WordDescriptionRepo repo, WordDescriptionMapper mpr) {
+        this.wordDescriptionRepo = repo;
+        this.mapper = mpr;
     }
 
     public void saveNewEntry(String pali, String translation) {
