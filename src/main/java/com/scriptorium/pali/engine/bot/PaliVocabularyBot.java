@@ -54,7 +54,6 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
         if (telRec.message.startsWith(COMMAND_PREFIX)) {
             String commandIdentifier = telRec.message.split(" ")[0].toLowerCase();
-
             commandContainer.retrieveCommand(commandIdentifier).execute(update);
         } else {
             var answer = retrieveTranslations(telRec.message);

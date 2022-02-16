@@ -54,8 +54,7 @@ public class NounCasesCommand extends AbstractMessagingCommand {
             dhatuWord = null;
         } else {
             dhatuWord = PaliCharsConverter.convertToDiacritic(commandString[1]);
-            var genderSymbol = commandString[2];
-            gender = Gender.from(genderSymbol);
+            gender = Gender.from(commandString[2]);
         }
         sendMessageService.sendMessage(update.getMessage().getChatId().toString(), generateAnswer());
     }
