@@ -33,11 +33,8 @@ public class VocabularyService {
         this.mapper = mpr;
     }
 
-    public void saveNewEntry(String pali, String translation) {
-        WordDescription word = WordDescription.builder()
-                .pali(pali.trim())
-                .translation(translation.trim())
-                .build();
+    public void saveNewEntry(final WordDescriptionDto wordDescriptionDto) {
+        WordDescription word = mapper.wordDtoToWordInDb(wordDescriptionDto);
         wordDescriptionRepo.save(word);
     }
 

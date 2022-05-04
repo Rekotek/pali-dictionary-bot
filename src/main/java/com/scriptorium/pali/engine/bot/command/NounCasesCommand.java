@@ -6,6 +6,7 @@ import com.scriptorium.pali.engine.bot.SendMessageService;
 import com.scriptorium.pali.enums.Gender;
 import com.scriptorium.pali.enums.NumberType;
 import com.scriptorium.pali.enums.WordCase;
+import com.scriptorium.pali.exceptions.UnknownEndingGenderException;
 import com.scriptorium.pali.service.VocabularyService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -28,8 +29,8 @@ public class NounCasesCommand extends AbstractMessagingCommand {
             return "Использование: <code>/noun &lt;основа слова (dhatu)&gt; &lt;m|n|f&gt;</code>";
         }
         try {
-            var output = new StringBuilder();
             var nounCases = new NounCases(dhatuWord, gender);
+            var output = new StringBuilder();
             var wordsByDhatu = vocabularyService.findByPaliStrict(dhatuWord);
             if (wordsByDhatu.size() == 1) {
                 output.append(wordsByDhatu.get(0).toHtml());
@@ -42,7 +43,7 @@ public class NounCasesCommand extends AbstractMessagingCommand {
             }
             output.append(nounCases.toHtml());
             return output.toString();
-        } catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException | UnknownEndingGenderException exception) {
             return exception.getMessage();
         }
     }
@@ -56,6 +57,6 @@ public class NounCasesCommand extends AbstractMessagingCommand {
             dhatuWord = PaliCharsConverter.convertToDiacritic(commandString[1]);
             gender = Gender.from(commandString[2]);
         }
-        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), generateAnswer());
+        super.execute(update);
     }
 }

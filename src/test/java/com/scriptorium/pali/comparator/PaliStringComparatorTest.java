@@ -1,11 +1,12 @@
 package com.scriptorium.pali.comparator;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PaliStringComparatorTest {
     @Test
@@ -15,7 +16,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -25,7 +26,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -35,7 +36,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -45,7 +46,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -57,7 +58,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -73,7 +74,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -84,7 +85,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -95,7 +96,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -105,7 +106,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -115,7 +116,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -125,7 +126,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -135,7 +136,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -145,7 +146,7 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
@@ -155,16 +156,15 @@ class PaliStringComparatorTest {
         List<String> sortedList = Arrays.stream(strings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), sortedList.toArray());
+        assertArrayEquals(expected.toArray(), sortedList.toArray());
     }
 
     @Test
     void expectedUncorrectedChar() {
         String[] strings = {"seṭṭhatā", "susirarukkho", "seṭṭHAz"};
-        var exception = Assertions.assertThrows(IllegalArgumentException.class, Arrays.stream(strings)
+        var exception = assertThrows(IllegalArgumentException.class, Arrays.stream(strings)
                 .sorted(new PaliStringComparator())::toList);
-
-        Assertions.assertEquals("Unknown char: z", exception.getMessage());
+        assertEquals("Unknown char: z", exception.getMessage());
     }
 
     @Test
@@ -177,11 +177,11 @@ class PaliStringComparatorTest {
         List<String> oneSortedList = Arrays.stream(oneStrings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), oneSortedList.toArray());
+        assertArrayEquals(expected.toArray(), oneSortedList.toArray());
         String[] reversedStrings = {FIRST_WORD, SECOND_WORD};
         List<String> anotherSortedList = Arrays.stream(reversedStrings)
                 .sorted(new PaliStringComparator())
                 .toList();
-        Assertions.assertArrayEquals(expected.toArray(), anotherSortedList.toArray());
+        assertArrayEquals(expected.toArray(), anotherSortedList.toArray());
     }
 }

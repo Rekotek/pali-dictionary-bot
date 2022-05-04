@@ -30,9 +30,4 @@ public class HelpCommand extends AbstractMessagingCommand {
     protected String generateAnswer() {
         return HELP_MSG;
     }
-//
-//    @Override
-//    public void execute(Update update) {
-//        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), HELP_MSG);
-//    }
 }

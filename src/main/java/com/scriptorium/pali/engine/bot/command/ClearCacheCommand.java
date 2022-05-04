@@ -22,6 +22,6 @@ public class ClearCacheCommand extends AbstractMessagingCommand {
     @Override
     public void execute(final Update update) {
         vocabularyService.evictAllCaches();
-        sendMessageService.sendMessage(update.getMessage().getChatId().toString(), generateAnswer());
+        super.execute(update);
     }
 }
