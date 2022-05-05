@@ -1,26 +1,19 @@
 package com.scriptorium.pali.engine.bot;
 
-import com.google.common.html.HtmlEscapers;
 import com.scriptorium.pali.engine.bot.command.CommandContainer;
-import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.service.AnswerService;
 import com.scriptorium.pali.service.VocabularyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.util.List;
-
-import static java.lang.Math.min;
 
 @Slf4j
 @Component
 public class PaliVocabularyBot extends TelegramLongPollingBot {
-
-    public static String COMMAND_PREFIX = "/";
+    private static final String COMMAND_PREFIX = "/";
 
     @Value("${bot.username}")
     private String username;
@@ -29,11 +22,16 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
     private String token;
 
     private final VocabularyService vocabularyService;
+    private final AnswerService answerService;
     private final CommandContainer commandContainer;
+    private final SendMessageService sendMessageService;
 
-    public PaliVocabularyBot(VocabularyService vocabularyService) {
-        this.vocabularyService = vocabularyService;
-        commandContainer = new CommandContainer(new SendMessageServiceImpl(this),
+    public PaliVocabularyBot(VocabularyService vs, AnswerService as) {
+        vocabularyService = vs;
+        answerService = as;
+        sendMessageService = new SendMessageServiceImpl(this);
+        commandContainer = new CommandContainer(
+                sendMessageService,
                 vocabularyService);
     }
 
@@ -49,49 +47,28 @@ public class PaliVocabularyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message = update.getMessage().getText().trim();
-            String chatId = update.getMessage().getChatId().toString();
+        var telRec = parseUpdate(update);
+        if (telRec == null) return;
 
-            if (message.startsWith(COMMAND_PREFIX)) {
-                String commandIdentifier = message.split(" ")[0].toLowerCase();
-
-                commandContainer.retrieveCommand(commandIdentifier).execute(update);
-            } else {
-                SendMessage sm = new SendMessage();
-                sm.setChatId(chatId);
-
-                List<WordDescription> translations = vocabularyService.findByPaliWide(message);
-                StringBuilder answer = new StringBuilder();
-                int stringLength = translations.stream()
-                        .map(w -> w.getPali() + " " + w.getTranslation())
-                        .reduce("", String::concat)
-                        .length();
-                if (stringLength > 2048) {
-                    answer.append("<b>Слишком много значений!</b>\n");
-                    int len = min(10, translations.size());
-                    answer.append(String.format("Будет выведены результат для первых <b>%d</b> слов.\n\n", len));
-                    translations.removeAll(translations.subList(len, translations.size()));
-                }
-                translations.forEach(row -> {
-                    String paliHead = "<b>" + row.getPali() + "</b>\n";
-                    String translationBody = HtmlEscapers.htmlEscaper().escape(row.getTranslation());
-                    answer.append(paliHead);
-                    answer.append(translationBody);
-                    answer.append("\n\n");
-                });
-                if (answer.isEmpty()) {
-                    answer.append(String.format("Не найдено слово: <code>%s</code>", message));
-                }
-                sm.enableHtml(true);
-                sm.setText(answer.toString().trim());
-
-                try {
-                    execute(sm);
-                } catch (TelegramApiException e) {
-                    log.error(e.getMessage());
-                }
-            }
+        if (telRec.message.startsWith(COMMAND_PREFIX)) {
+            var commandIdentifier = telRec.message.split(" ")[0].toLowerCase();
+            commandContainer.retrieveCommand(commandIdentifier).execute(update);
+        } else {
+            var answer = answerService.retrieveTranslations(telRec.message);
+            sendMessageService.sendMessage(telRec.chatId, answer);
         }
+    }
+
+    private record TelRec(String message, String chatId) {}
+
+    private TelRec parseUpdate(final Update update) {
+        final Message message;
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            message = update.getMessage();
+        } else if (update.hasEditedMessage() && update.getEditedMessage().hasText()) {
+            message = update.getEditedMessage();
+        } else
+            return null;
+        return new TelRec(message.getText().trim(), message.getChatId().toString());
     }
 }

@@ -1,6 +1,21 @@
 # Release Notes
 
-##0.3-SNAPSHOT
+## 0.7-SNAPSHOT
+* Make dependency for `pali-grammar` be loaded from GitHub project
+* Fix test which use `MapStruct` implementation
+
+## 0.6-SNAPSHOT
+* Improve `/noun` command
+* Add declensions for _m_ and _f_ nouns with _-ar_ ending
+* Add `level` field for WordDescription, fill it from docx
+* Add `word_form` field for WordDescription
+* Fix bug: no error message print out when wrong ending-gender was given 
+
+## 0.4-SNAPSHOT
+* New command `/noun` applied
+* Add declensions for _m_ nouns with _-a_ ending
+
+## 0.3-SNAPSHOT
 * Add Spring Cache
 * Add Hibernate 2nd level cache
 * Add special command `/clearcache` to the bot for evicting both caches.

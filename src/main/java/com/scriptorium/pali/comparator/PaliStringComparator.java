@@ -125,6 +125,8 @@ public class PaliStringComparator implements Comparator<String> {
         if (currentChar1 != '(' && currentChar2 == '(') return 1;
         if (currentChar1 == '-' && currentChar2 != '-') return -1;
         if (currentChar1 != '-' && currentChar2 == '-') return 1;
+        if (currentChar1 == ' ' && currentChar2 != ' ') return -1;
+        if (currentChar1 != ' ' && currentChar2 == ' ') return 1;
         return 0;
     }
 

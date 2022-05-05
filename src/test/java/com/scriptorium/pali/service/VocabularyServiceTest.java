@@ -1,6 +1,8 @@
 package com.scriptorium.pali.service;
 
 import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.entity.mapper.WordDescriptionMapper;
+import com.scriptorium.pali.entity.mapper.WordDescriptionMapperImpl;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = VocabularyServiceCacheConfiguration.class)
+@ContextConfiguration(classes ={
+        WordDescriptionMapperImpl.class,
+        VocabularyServiceCacheConfiguration.class
+    })
 class VocabularyServiceTest {
     private static final String WORD_PALI = "pali";
     private static final String WORD_PAALI = "pAli";
@@ -29,6 +34,9 @@ class VocabularyServiceTest {
 
     @MockBean
     WordDescriptionRepo wordDescriptionRepo;
+
+    @MockBean
+    WordDescriptionMapper wordDescriptionMapper;
 
     @Autowired
     VocabularyService vocabularyService;
@@ -38,17 +46,18 @@ class VocabularyServiceTest {
 
     @BeforeEach
     void setUp() {
-        var word1 = new WordDescription(1L, WORD_PALI, WORD_PALI, "First description");
-        var word2 = new WordDescription(2L, WORD_PALI, WORD_PALI, "Second description");
+        var word1 = new WordDescription(1L, WORD_PALI, WORD_PALI, "First description", 1, null);
+        var word2 = new WordDescription(2L, WORD_PALI, WORD_PALI, "Second description", 1, null);
         var answer1 = new ArrayList<WordDescription>(1);
         answer1.add(word1);
         var answer2 = new ArrayList<WordDescription>(1);
         answer2.add(word2);
         when(wordDescriptionRepo.findPaliWide(WORD_PALI)).thenReturn(answer1, answer2);
-        var newWord = new WordDescription(3L, DIACRITIC_WORD_PAALI, WORD_PAALI, "Another description");
+        var newWord = new WordDescription(3L, DIACRITIC_WORD_PAALI, WORD_PAALI, "Another description", 1, null);
         var newAnswer = new ArrayList<WordDescription>(1);
         newAnswer.add(newWord);
         when(wordDescriptionRepo.findPaliWide(WORD_PAALI)).thenReturn(newAnswer);
+        wordDescriptionMapper = new WordDescriptionMapperImpl();
     }
 
     @Test
