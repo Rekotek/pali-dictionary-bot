@@ -137,12 +137,6 @@
             <artifactId>PaliGrammar</artifactId>
             <version>${pali-grammar-forms.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.scriptorium.pali</groupId>
-            <artifactId>grammar-forms</artifactId>
-            <version>${pali-grammar-forms.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
