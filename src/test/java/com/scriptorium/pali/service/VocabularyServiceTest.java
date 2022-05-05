@@ -1,6 +1,8 @@
 package com.scriptorium.pali.service;
 
 import com.scriptorium.pali.entity.WordDescription;
+import com.scriptorium.pali.entity.mapper.WordDescriptionMapper;
+import com.scriptorium.pali.entity.mapper.WordDescriptionMapperImpl;
 import com.scriptorium.pali.repository.WordDescriptionRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = VocabularyServiceCacheConfiguration.class)
+@ContextConfiguration(classes ={
+        WordDescriptionMapperImpl.class,
+        VocabularyServiceCacheConfiguration.class
+    })
 class VocabularyServiceTest {
     private static final String WORD_PALI = "pali";
     private static final String WORD_PAALI = "pAli";
@@ -29,6 +34,9 @@ class VocabularyServiceTest {
 
     @MockBean
     WordDescriptionRepo wordDescriptionRepo;
+
+    @MockBean
+    WordDescriptionMapper wordDescriptionMapper;
 
     @Autowired
     VocabularyService vocabularyService;
@@ -49,6 +57,7 @@ class VocabularyServiceTest {
         var newAnswer = new ArrayList<WordDescription>(1);
         newAnswer.add(newWord);
         when(wordDescriptionRepo.findPaliWide(WORD_PAALI)).thenReturn(newAnswer);
+        wordDescriptionMapper = new WordDescriptionMapperImpl();
     }
 
     @Test
