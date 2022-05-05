@@ -1,8 +1,15 @@
 # Release Notes
 
+## 0.6-SNAPSHOT
+* Improve `/noun` command
+* Add declensions for _m_ and _f_ nouns with _-ar_ ending
+* Add `level` field for WordDescription, fill it from docx
+* Add `word_form` field for WordDescription
+* Fix bug: no error message print out when wrong ending-gender was given 
+
 ## 0.4-SNAPSHOT
 * New command `/noun` applied
-* Add declensions for _m_ noun with _-a_ ending
+* Add declensions for _m_ nouns with _-a_ ending
 
 ## 0.3-SNAPSHOT
 * Add Spring Cache
