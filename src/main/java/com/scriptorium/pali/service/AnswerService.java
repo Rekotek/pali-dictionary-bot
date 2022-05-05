@@ -25,8 +25,8 @@ public class AnswerService {
             translations = vocabularyService.findInsideTranslation(inputWord);
         } else {
             if (inputWord.endsWith("!")) {
-                inputWord = inputWord.substring(0, inputWord.length() - 1);
-                translations = vocabularyService.findByPaliStrict(inputWord);
+                var reducedWord = inputWord.substring(0, inputWord.length() - 1);
+                translations = vocabularyService.findByPaliStrict(reducedWord);
             } else {
                 translations = vocabularyService.findByPaliWide(inputWord);
             }
