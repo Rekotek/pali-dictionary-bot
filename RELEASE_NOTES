@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.7-SNAPSHOT
+* Make dependency for `pali-grammar` be loaded from GitHub project
+* Fix test which use `MapStruct` implementation
+
 ## 0.6-SNAPSHOT
 * Improve `/noun` command
 * Add declensions for _m_ and _f_ nouns with _-ar_ ending
